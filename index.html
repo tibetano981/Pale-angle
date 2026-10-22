@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ht">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pale Anglè</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1456A0">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EAF4F7;--card:#fff;--ink:#12303B;--soft:#4F6A75;--blue:#1456A0;--red:#D6334B;--sun:#F5B31B;--ok:#1E8C5A;--line:#C9DDE4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1E26;--card:#162B36;--ink:#E8F1F4;--soft:#9DB6C0;--blue:#6BAEF2;--red:#FF7B8E;--ok:#4CC98C;--line:#2A4452}}
+:root[data-theme="dark"]{--bg:#0E1E26;--card:#162B36;--ink:#E8F1F4;--soft:#9DB6C0;--blue:#6BAEF2;--red:#FF7B8E;--ok:#4CC98C;--line:#2A4452}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.5 Fredoka,"Segoe UI",system-ui,sans-serif}
+main{max-width:520px;margin:0 auto;padding:16px}
+h1{font-size:28px;margin:4px 0 0;color:var(--blue);font-weight:600}
+.sub{margin:0 0 14px;color:var(--soft)}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.msg{padding:10px 14px;border-radius:16px;margin:8px 0;max-width:88%;border:2px solid var(--line);background:var(--card)}
+.msg.user{margin-left:auto;background:var(--blue);border-color:var(--blue);color:#fff}
+input{flex:1;min-width:0;font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px}
+button{font:inherit;color:inherit;cursor:pointer}
+.tab,.chip{border:2px solid var(--line);background:var(--card);border-radius:999px;padding:8px 16px}
+.tab[aria-pressed=true],.chip[aria-pressed=true]{background:var(--blue);border-color:var(--blue);color:#fff}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:8px}
+.chip{white-space:nowrap;padding:6px 14px;font-size:15px}
+.bar{height:8px;background:var(--line);border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--sun);width:0;transition:width .3s}
+.meta{display:flex;justify-content:space-between;color:var(--soft);font-size:14px;margin:6px 0 12px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:24px 20px;text-align:center}
+.en{font-size:34px;font-weight:600;color:var(--blue);line-height:1.2;margin:0}
+.pr{color:var(--red);font-size:20px;margin:6px 0}
+.kr{font-size:20px;margin:10px 0 0}
+.row{display:flex;gap:10px;margin-top:14px}
+.row button{flex:1;padding:12px;border-radius:14px;border:2px solid var(--line);background:var(--card)}
+.row .main{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+.row .done{border-color:var(--ok);color:var(--ok)}
+.opt{display:block;width:100%;text-align:left;margin-top:10px;padding:14px;border:2px solid var(--line);border-radius:14px;background:var(--card)}
+.opt.good{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 18%,var(--card))}
+.opt.bad{border-color:var(--red);background:color-mix(in srgb,var(--red) 16%,var(--card))}
+.big{font-size:48px;margin:0;color:var(--blue);font-weight:600}
+button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+<h1>Pale Anglè</h1>
+<p class="sub">Aprann pale anglè ak mo ak fraz ou bezwen chak jou.</p>
+<div class="tabs">
+<button class="tab" id="tL" aria-pressed="true">Leson</button>
+<button class="tab" id="tQ" aria-pressed="false">Kviz</button>
+<button class="tab" id="tS" aria-pressed="false">Pale</button>
+</div>
+<div class="chips" id="chips"></div>
+<div id="view"></div>
+</main>
+<script>
+const DATA=[
+{n:"Salitasyon",w:[
+["Hello","Bonjou / Alo","hè-lo"],["Good morning","Bonjou (nan maten)","goud mòning"],["Good night","Bòn nwit","goud nayt"],["How are you?","Kijan ou ye?","hao a yo?"],["I’m fine, thank you","Mwen byen, mèsi","aym fayn, tank yo"],["Please","Tanpri","pliz"],["Thank you","Mèsi","tank yo"],["Goodbye","Orevwa","goud-baye"]]},
+{n:"Prezante tèt ou",w:[
+["My name is…","Non mwen se…","may nèm iz"],["Nice to meet you","Mwen kontan konnen ou","nays tu mit yo"],["Where are you from?","Ki kote ou soti?","wè a yo from?"],["I am from Haiti","Mwen sòti Ayiti","ay am from hèti"],["I speak Creole","Mwen pale kreyòl","ay spik kriyòl"],["I am learning English","Mwen ap aprann anglè","ay am lènin ingliş"],["Do you speak English?","Èske ou pale anglè?","du yo spik ingliş?"],["Please speak slowly","Tanpri pale dousman","pliz spik slòli"]]},
+{n:"Chak jou",w:[
+["I need help","Mwen bezwen èd","ay nid hèlp"],["Where is the bathroom?","Ki kote twalèt la ye?","wè riz the batrum?"],["How much is it?","Konbyen li ye?","hao moch iz it?"],["I don’t understand","Mwen pa konprann","ay dont ondèstand"],["Can you repeat that?","Ou ka repete sa?","kan yo ripit dat?"],["I am hungry","Mwen grangou","ay am hongri"],["Water, please","Dlo, tanpri","wòtè, pliz"],["Where is the hospital?","Ki kote lopital la ye?","wè riz the haspitèl?"]]},
+{n:"Chif",w:[
+["One","Youn","wan"],["Two","De","tu"],["Three","Twa","tri"],["Four","Kat","fò"],["Five","Senk","fayv"],["Six","Sis","siks"],["Seven","Sèt","sèvèn"],["Eight","Wit","èyt"]]},
+{n:"Manje",w:[
+["I want to order food","Mwen vle kòmande manje","ay wont tu ôdè fud"],["What do you have?","Kisa ou genyen?","wat du yo hav?"],["Rice and beans","Diri ak pwa","rays and bins"],["Chicken","Poul","tchikèn"],["A glass of water","Yon vè dlo","a glas ov wòtè"],["The bill, please","Nòt la, tanpri","the bil, pliz"],["It is delicious","Li bon anpil","it iz dilişos"],["I am allergic to peanuts","Mwen alèjik ak pistach","ay am alèjik tu pinots"]]},
+{n:"Travay",w:[
+["I am looking for a job","Mwen ap chèche travay","ay am lukin fò a djob"],["I have experience","Mwen gen eksperyans","ay hav ekspirians"],["When do I start?","Kilè mwen kòmanse?","wen du ay start?"],["What time do I finish?","Kilè mwen fini?","wat tayn du ay finiş?"],["I am on time","Mwen alè","ay am on tayn"],["I am sorry I’m late","Eskize m, mwen an reta","ay am sori aym lèt"],["Can I have a day off?","Eske mwen ka pran yon jou konje?","kan ay hav a dè of?"],["Thank you for the opportunity","Mèsi pou opòtinite a","tank yo fò di apòtyuniti"]]},
+{n:"Doktè",w:[
+["I don’t feel well","Mwen pa santi m byen","ay dont fil wèl"],["I have a headache","Mwen gen tèt fè mal","ay hav a hèdeyk"],["I have a fever","Mwen gen lafyèv","ay hav a fivè"],["It hurts here","Mwen fè mal isit la","it hòts hiyè"],["I need medicine","Mwen bezwen medikaman","ay nid medisin"],["I need an interpreter","Mwen bezwen yon entèprèt","ay nid an entèprètè"],["How many times a day?","Konbyen fwa nan yon jou?","hao meni tayms a dè?"],["Call an ambulance","Rele yon anbilans","kol an ambyilans"]]},
+{n:"Transpò",w:[
+["Where is the bus stop?","Ki kote estasyon bis la ye?","wè riz the bos stap?"],["I am lost","Mwen pèdi","ay am lòst"],["Turn left","Vire agoch","tèn left"],["Turn right","Vire adwat","tèn rayt"],["Go straight","Ale tou dwat","go stret"],["How far is it?","Ki distans li ye?","hao far iz it?"],["I need a taxi","Mwen bezwen yon taksi","ay nid a taksi"],["Stop here, please","Rete isit la, tanpri","stap hiyè, pliz"]]}
+];
+const ALL=DATA.flatMap(c=>c.w);
+let cat=0,idx=0,mode="L",learned=new Set(),Q=null;
+try{learned=new Set(JSON.parse(localStorage.getItem("pa-learned")||"[]"))}catch(e){}
+const save=()=>{try{localStorage.setItem("pa-learned",JSON.stringify([...learned]))}catch(e){}};
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function note(m){let n=$("note");if(!n){n=document.createElement("p");n.id="note";n.className="sub";n.style.color="var(--red)";document.querySelector("main").appendChild(n)}n.textContent=m;clearTimeout(note.t);note.t=setTimeout(()=>n.textContent="",6000)}
+function say(t){
+if(!("speechSynthesis" in window)){note("Navigatè sa a pa ka li mo yo avèk vwa. Eseye Chrome oswa Safari.");return}
+try{const ss=speechSynthesis;ss.cancel();ss.resume();
+const u=new SpeechSynthesisUtterance(t.replace("…",""));u.lang="en-US";u.rate=.85;u.volume=1;
+const v=ss.getVoices().find(x=>/^en[-_]US/i.test(x.lang))||ss.getVoices().find(x=>/^en/i.test(x.lang));if(v)u.voice=v;
+u.onerror=()=>note("Son an pa mache. Verifye volim nan, epi si w sou iPhone, pa mete telef la an silans.");
+ss.speak(u);
+if(!ss.getVoices().length)note("Pa gen vwa anglè sou aparèy sa a. Ale nan paramèt aparèy ou pou enstale yon vwa anglè.")}
+catch(e){note("Son an pa mache sou navigatè sa a.")}}
+try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices()}catch(e){}
+function chips(){$("chips").innerHTML=DATA.map((c,i)=>`<button class="chip" data-i="${i}" aria-pressed="${i===cat}">${c.n}</button>`).join("");
+$("chips").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{cat=+b.dataset.i;idx=0;Q=null;chips();render()});
+$("tL").setAttribute("aria-pressed",mode==="L");$("tQ").setAttribute("aria-pressed",mode==="Q");$("tS").setAttribute("aria-pressed",mode==="S")}
+function lesson(){
+const w=DATA[cat].w,[en,kr,pr]=w[idx],n=w.filter(x=>learned.has(x[0])).length,k=learned.has(en);
+$("view").innerHTML=`<div class="bar"><i style="width:${n/w.length*100}%"></i></div>
+<div class="meta"><span>${idx+1} / ${w.length}</span><span>${n} sou ${w.length} aprann</span></div>
+<div class="card"><p class="en">${en}</p><p class="pr">${pr}</p><p class="kr">${kr}</p></div>
+<div class="row"><button class="main" id="sp">🔊 Koute</button><button id="kn" class="${k?"done":""}">${k?"✓ Mwen konnen li":"Mwen konnen li"}</button></div>
+<div class="row"><button id="pv">Anvan</button><button id="nx">Pwochen</button></div>`;
+$("sp").onclick=()=>say(en);
+$("kn").onclick=()=>{k?learned.delete(en):learned.add(en);save();lesson()};
+$("pv").onclick=()=>{idx=(idx-1+w.length)%w.length;lesson()};
+$("nx").onclick=()=>{idx=(idx+1)%w.length;lesson()};}
+function quiz(){
+if(!Q)Q={items:shuffle(DATA[cat].w),i:0,s:0,a:false};
+if(Q.i>=Q.items.length){$("view").innerHTML=`<div class="card"><p class="big">${Q.s} / ${Q.items.length}</p><p class="kr">${Q.s===Q.items.length?"Bravo! Ou jwenn tout repons yo.":"Kontinye pratike, w ap pi bon chak jou."}</p></div><div class="row"><button class="main" id="rs">Rekòmanse</button></div>`;$("rs").onclick=()=>{Q=null;quiz()};return}
+const it=Q.items[Q.i];
+if(!Q.opts)Q.opts=shuffle([it[0],...shuffle(ALL.filter(x=>x[0]!==it[0])).slice(0,3).map(x=>x[0])]);
+$("view").innerHTML=`<div class="bar"><i style="width:${Q.i/Q.items.length*100}%"></i></div>
+<div class="meta"><span>Kesyon ${Q.i+1} / ${Q.items.length}</span><span>Pwen: ${Q.s}</span></div>
+<div class="card"><p class="kr" style="margin:0">Kijan ou di sa an anglè?</p><p class="en" style="margin-top:8px">${it[1]}</p></div>
+<div id="os">${Q.opts.map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join("")}</div><div id="nx2"></div>`;
+document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+if(Q.a)return;Q.a=true;const ok=b.dataset.o===it[0];if(ok)Q.s++;
+document.querySelectorAll(".opt").forEach(x=>{if(x.dataset.o===it[0])x.classList.add("good");else if(x===b)x.classList.add("bad")});
+say(it[0]);
+$("nx2").innerHTML=`<div class="row"><button class="main" id="go">${Q.i+1===Q.items.length?"Wè rezilta":"Pwochen"}</button></div>`;
+$("go").onclick=()=>{Q.i++;Q.a=false;Q.opts=null;quiz()}})}
+function render(){if(mode==="L")lesson();else if(mode==="Q")quiz();else speak()}
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
+const norm=s=>s.toLowerCase().replace(/[’]/g,"'").replace(/[^a-z' ]/g,"").split(/\s+/).filter(Boolean);
+function speak(){
+const w=DATA[cat].w,[en,kr,pr]=w[idx];
+$("view").innerHTML=`<div class="card"><p class="en">${en}</p><p class="pr">${pr}</p><p class="kr">${kr}</p></div>
+<div class="row"><button id="sp">🔊 Koute</button><button class="main" id="mic">🎤 Pale</button></div>
+<div class="card" id="res" style="margin-top:12px">Koute fraz la, peze 🎤, epi repete l byen fò.</div>
+<div class="row"><button id="pv">Anvan</button><button id="nx">Pwochen</button></div>`;
+$("sp").onclick=()=>say(en);
+$("pv").onclick=()=>{idx=(idx-1+w.length)%w.length;speak()};
+$("nx").onclick=()=>{idx=(idx+1)%w.length;speak()};
+$("mic").onclick=()=>{
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition,res=$("res");
+if(!SR){res.textContent="Navigatè sa a pa sipòte mikwofòn nan. Eseye Chrome oswa Safari.";return}
+const r=new SR();r.lang="en-US";r.interimResults=false;res.textContent="M ap koute w…";
+r.onresult=e=>{const h=norm(e.results[0][0].transcript),t=norm(en),miss=t.filter(x=>!h.includes(x)),p=Math.round((t.length-miss.length)/t.length*100);
+res.innerHTML=`<p class="big">${p}%</p><p>Mwen tande: ${esc(h.join(" "))}</p><p>${p===100?"Ekselan! Prononsyasyon ou bon.":"Eseye ankò. Mo ki manke: "+esc(miss.join(", "))}</p>`};
+r.onerror=()=>{res.textContent="Mwen pa t ka tande w. Verifye mikwofòn nan epi eseye ankò."};
+try{r.start()}catch(e){res.textContent="Mikwofòn nan pa disponib."}}}
+$("tL").onclick=()=>{mode="L";chips();render()};
+$("tQ").onclick=()=>{mode="Q";Q=null;chips();render()};
+$("tS").onclick=()=>{mode="S";idx=0;chips();render()};
+chips();render();
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+</script>
+</body>
+</html>
